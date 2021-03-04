@@ -6,7 +6,9 @@ from selenium.webdriver.chrome.options import Options
 
 class TestHeadless(unittest.TestCase):
     def setUp(self):
-        self.config = configparser.ConfigParser().read('config.ini')
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        self.config = config
         chrome_options = Options()
         chrome_options.add_argument("window-size=300,300")
         chrome_options.headless = True
@@ -16,8 +18,8 @@ class TestHeadless(unittest.TestCase):
     def test_software_testing_is_enrolled(self):
         driver = self.driver
         driver.get("https://cw.sharif.edu/login/index.php")
-        driver.find_element_by_name("username").send_keys(std_id())
-        driver.find_element_by_name("password").send_keys(secret())
+        driver.find_element_by_name("username").send_keys(self.config['CW']['username'])
+        driver.find_element_by_name("password").send_keys(self.config['CW']['password'])
         driver.find_element_by_id("login").submit()
         self.assertTrue("آزمون نرم‌افزار" in [c.text.split('|')[0].strip()
                                      for c in driver.find_elements_by_css_selector("#pc-for-in-progress .media-heading a")])
